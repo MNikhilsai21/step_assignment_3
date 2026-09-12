@@ -1,0 +1,29 @@
+class BusinessEmployee {
+    String empName;
+    double salary;
+    
+    // Shared immutable global layout values across data scopes
+    static String companyName = "Bright Horizon Technologies";
+    static int employeeCount = 0;
+
+    public BusinessEmployee(String empName, double salary) {
+        this.empName = empName;
+        this.salary = salary;
+        employeeCount++; // Increment global record size index automatically upon initialization
+    }
+
+    // Static function boundary limits scope strictly to static parameters
+    static void printCompanyInfo() {
+        System.out.println(companyName);
+        System.out.println("Employees on record: " + employeeCount);
+    }
+
+    public static void main(String[] args) {
+        BusinessEmployee e1 = new BusinessEmployee("Raj", 30000);
+        BusinessEmployee e2 = new BusinessEmployee("Simran", 45000);
+        BusinessEmployee e3 = new BusinessEmployee("Kunal", 50000);
+
+        // Execute function strictly via static class lookup route layer
+        BusinessEmployee.printCompanyInfo();
+    }
+}
