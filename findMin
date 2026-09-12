@@ -1,0 +1,21 @@
+public int findMin(int[] nums) {
+    int left = 0;
+    int right = nums.length - 1;
+    
+    // Modified binary search approach
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        
+        // Compare mid directly with right element to identify the unsorted drop pivot point
+        if (nums[mid] > nums[right]) {
+            // Minimum must be located in the right half of the pivot split
+            left = mid + 1;
+        } else {
+            // Minimum is located at mid index or somewhere to its left side
+            right = mid;
+        }
+    }
+    
+    // Loop breaks when left == right, pinpointing the minimum value element position
+    return nums[left];
+}
