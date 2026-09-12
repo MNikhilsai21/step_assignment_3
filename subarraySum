@@ -1,0 +1,27 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public int subarraySum(int[] nums, int k) {
+    int count = 0;
+    int currentSum = 0;
+    
+    // Map to store frequency of prefix sums encountered
+    Map<Integer, Integer> prefixSumFreq = new HashMap<>();
+    
+    // Crucial base-case: Initialize empty prefix sum boundary to handle values starting from index 0
+    prefixSumFreq.put(0, 1);
+    
+    for (int num : nums) {
+        currentSum += num;
+        
+        // If (currentSum - k) exists as an earlier prefix sum, a valid matching subarray is found
+        if (prefixSumFreq.containsKey(currentSum - k)) {
+            count += prefixSumFreq.get(currentSum - k);
+        }
+        
+        // Record current running prefix sum into frequency mapping tracker
+        prefixSumFreq.put(currentSum, prefixSumFreq.getOrDefault(currentSum, 0) + 1);
+    }
+    
+    return count;
+}
