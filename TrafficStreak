@@ -1,0 +1,43 @@
+public class TrafficStreak {
+    public static void findLongestStreak(String signalLog) {
+        if (signalLog == null || signalLog.length() == 0) {
+            System.out.println("Empty signal log.");
+            return;
+        }
+
+        char longestColor = signalLog.charAt(0);
+        int maxStreak = 1;
+
+        char currentColor = signalLog.charAt(0);
+        int currentStreak = 1;
+
+        // Single pass layout processing from left to right
+        for (int i = 1; i < signalLog.length(); i++) {
+            if (signalLog.charAt(i) == currentColor) {
+                currentStreak++;
+            } else {
+                // Streak broken: check if the completed streak is the longest
+                if (currentStreak > maxStreak) {
+                    maxStreak = currentStreak;
+                    longestColor = currentColor;
+                }
+                // Reset tracker for the new upcoming color streak
+                currentColor = signalLog.charAt(i);
+                currentStreak = 1;
+            }
+        }
+
+        // Final closing check for the final element track streak
+        if (currentStreak > maxStreak) {
+            maxStreak = currentStreak;
+            longestColor = currentColor;
+        }
+
+        System.out.println("Longest Streak: '" + longestColor + "' repeated " + maxStreak + " times");
+    }
+
+    public static void main(String[] args) {
+        findLongestStreak("RRGGGYRR");
+        findLongestStreak("RRRRYYGG");
+    }
+}
