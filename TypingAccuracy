@@ -1,0 +1,36 @@
+public class TypingAccuracy {
+    public static void checkTypingAccuracy(String original, String typed) {
+        int matches = 0;
+        int firstMismatchPos = -1;
+        int totalChars = original.length();
+
+        // Compare string characters by position
+        for (int i = 0; i < totalChars; i++) {
+            if (original.charAt(i) == typed.charAt(i)) {
+                matches++;
+            } else if (firstMismatchPos == -1) {
+                // Track 1-based indexing position for the first mismatch
+                firstMismatchPos = i + 1; 
+            }
+        }
+
+        double accuracy = ((double) matches / totalChars) * 100;
+
+        System.out.print("Matched: " + matches + "/" + totalChars + " | ");
+        System.out.printf("Accuracy: %.2f%% | ", accuracy);
+
+        if (firstMismatchPos == -1) {
+            System.out.println("No Mismatches");
+        } else {
+            // Adjust to get the mismatch characters (0-based index usage)
+            char origChar = original.charAt(firstMismatchPos - 1);
+            char typedChar = typed.charAt(firstMismatchPos - 1);
+            System.out.println("First Mismatch at position " + firstMismatchPos + " ('" + origChar + "' vs '" + typedChar + "')");
+        }
+    }
+
+    public static void main(String[] args) {
+        checkTypingAccuracy("hello world", "hello worlt");
+        checkTypingAccuracy("coding", "coding");
+    }
+}
