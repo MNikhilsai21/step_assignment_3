@@ -1,0 +1,28 @@
+public class WordReversalEncoder {
+    public static String reverseEachWord(String sentence) {
+        // Split sentence into words separated by spaces
+        String[] words = sentence.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < words.length; i++) {
+            // Reverse the current individual word using StringBuilder
+            StringBuilder reversedWord = new StringBuilder(words[i]);
+            reversedWord.reverse();
+
+            // Append the reversed word to our running buffer
+            result.append(reversedWord);
+
+            // Rejoin words with a single space except after the last word
+            if (i < words.length - 1) {
+                result.append(" ");
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        String input = "hello club";
+        System.out.println(reverseEachWord(input));
+    }
+}
