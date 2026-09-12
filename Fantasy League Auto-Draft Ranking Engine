@@ -1,0 +1,82 @@
+import java.util.Arrays;
+
+class Player implements Comparable<Player> {
+    private String name;
+    private int matchesPlayed;
+    private double battingAverage;
+    private boolean injured;
+
+    public Player(String name, int matchesPlayed, double battingAverage, boolean injured) {
+        this.name = name;
+        this.matchesPlayed = matchesPlayed;
+        this.battingAverage = battingAverage;
+        this.injured = injured;
+    }
+
+    public String getName() { return name; }
+    public int getMatchesPlayed() { return matchesPlayed; }
+    public double getBattingAverage() { return battingAverage; }
+    public boolean isInjured() { return injured; }
+
+    // Overloaded rule 1: Experience threshold (matches >= 10 automatically draftable)
+    public static boolean isDraftable(int matchesPlayed) {
+        return matchesPlayed >= 10;
+    }
+
+    // Overloaded rule 2: Combined threshold (needs at least 5 matches AND must not be injured)
+    public static boolean isDraftable(int matchesPlayed, boolean injured) {
+        return isDraftable(matchesPlayed) || (matchesPlayed >= 5 && !injured);
+    }
+
+    // Sort descending by battingAverage
+    @Override
+    public int compareTo(Player other) {
+        return Double.compare(other.getBattingAverage(), this.getBattingAverage());
+    }
+}
+
+public class Problem5 {
+    static String draftAndRank(Player[] players) {
+        // Step 1: Count draftable players to size the tracking array
+        int count = 0;
+        for (Player p : players) {
+            if (Player.isDraftable(p.getMatchesPlayed(), p.isInjured())) {
+                count++;
+            }
+        }
+
+        // Step 2: Populate the draftable player pool array
+        Player[] draftable = new Player[count];
+        int index = 0;
+        for (Player p : players) {
+            if (Player.isDraftable(p.getMatchesPlayed(), p.isInjured())) {
+                draftable[index++] = p;
+            }
+        }
+
+        // Step 3: Sort entirely using native Java sorting driven by compareTo() descending rules
+        Arrays.sort(draftable);
+
+        // Step 4: Build out final leaderboard text formatting layout
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < draftable.length; i++) {
+            result.append(i + 1).append(". ").append(draftable[i].getName());
+            if (i < draftable.length - 1) {
+                result.append(" | ");
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        Player[] players = {
+            new Player("Virat", 15, 48.0, false),
+            new Player("Rahul", 7, 55.0, false),
+            new Player("Sameer", 3, 60.0, false),
+            new Player("Dev", 12, 20.0, true)
+        };
+
+        System.out.println(draftAndRank(players));
+    }
+}
