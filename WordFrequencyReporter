@@ -1,0 +1,45 @@
+import java.util.*;
+
+public class WordFrequencyReporter {
+    public static void printFilteredWordFrequency(String feedback) {
+        // Set up the static lookup stop word collection structure
+        String[] stopWordsArray = {"the", "was", "and", "a", "is", "of", "in"};
+        Set<String> stopWords = new HashSet<>(Arrays.asList(stopWordsArray));
+
+        // Normalize text string elements
+        String cleaned = feedback.toLowerCase();
+        // Remove periods and commas
+        cleaned = cleaned.replace(".", "").replace(",", "");
+
+        // Split text using a standard whitespace regex layout rule pattern
+        String[] words = cleaned.split("\\s+");
+        Map<String, Integer> freqMap = new HashMap<>();
+
+        for (String word : words) {
+            if (word.isEmpty()) continue;
+            
+            // Skip the tracking process for matching stop filler words
+            if (stopWords.contains(word)) {
+                continue;
+            }
+            
+            freqMap.put(word, freqMap.getOrDefault(word, 0) + 1);
+        }
+
+        // Extract mappings to a list for custom element weight structural sorting
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(freqMap.entrySet());
+        
+        // Sort by value (count) descending
+        list.sort((a, b) -> b.getValue().compareTo(a.getValue()));
+
+        // Display results matching final frequency profile rules
+        for (Map.Entry<String, Integer> entry : list) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    public static void main(String[] args) {
+        String feedback = "The mentor was great, the session was great and clear.";
+        printFilteredWordFrequency(feedback);
+    }
+}
