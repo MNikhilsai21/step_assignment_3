@@ -1,0 +1,30 @@
+public class Character {
+    // Requirements: Private health, final maximum health
+    private int health;
+    private final int maxHealth;
+
+    // Constructor fixes the maximum health
+    public Character(int maxHealth) {
+        this.maxHealth = maxHealth;
+        this.health = maxHealth; // Start at max health
+    }
+
+    // Clamps health so it doesn't exceed maxHealth
+    public void heal(int amount) {
+        if (amount > 0) {
+            this.health = Math.min(this.health + amount, this.maxHealth);
+        }
+    }
+
+    // Clamps health so it doesn't drop below 0
+    public void takeDamage(int amount) {
+        if (amount > 0) {
+            this.health = Math.max(this.health - amount, 0);
+        }
+    }
+
+    // Read-only getter for current health
+    public int getHealth() {
+        return this.health;
+    }
+}
