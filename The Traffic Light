@@ -1,0 +1,32 @@
+public class TrafficLight {
+    private final String id;
+    private String color;
+
+    public TrafficLight(String id) {
+        this.id = id;
+        this.color = "RED"; // Default starting color
+    }
+
+    // Cycles systematically through the allowed transitions
+    public void next() {
+        switch (this.color) {
+            case "RED":
+                this.color = "GREEN";
+                break;
+            case "GREEN":
+                this.color = "YELLOW";
+                break;
+            case "YELLOW":
+                this.color = "RED";
+                break;
+        }
+    }
+
+    public String getColor() {
+        return this.color;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+}
