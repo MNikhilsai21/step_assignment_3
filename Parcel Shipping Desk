@@ -1,0 +1,81 @@
+import java.util.Scanner;
+
+// Interface segregation ensures standard parcels are unaffected if more types become insurable later
+interface Insurable {
+    double getDeclaredValue();
+    default double calculateInsurance() {
+        return getDeclaredValue() * 0.02;
+    }
+}
+
+abstract class Parcel {
+    protected double weight;
+    protected double declaredValue;
+
+    public Parcel(double weight, double declaredValue) {
+        this.weight = weight;
+        this.declaredValue = declaredValue;
+    }
+
+    public abstract double calculateCharge();
+
+    public double getInsuranceCharge() {
+        if (this instanceof Insurable) {
+            return ((Insurable) this).calculateInsurance();
+        }
+        return 0.00;
+    }
+
+    public double calculateTotal() {
+        return calculateCharge() + getInsuranceCharge();
+    }
+}
+
+class StandardParcel extends Parcel {
+    public StandardParcel(double weight, double declaredValue) { super(weight, declaredValue); }
+    @Override public double calculateCharge() { return 40.00 + (10.00 * weight); }
+}
+
+class ExpressParcel extends Parcel implements Insurable {
+    public ExpressParcel(double weight, double declaredValue) { super(weight, declaredValue); }
+    @Override public double calculateCharge() { return 80.00 + (15.00 * weight); }
+    @Override public double getDeclaredValue() { return declaredValue; }
+}
+
+class FragileParcel extends Parcel implements Insurable {
+    public FragileParcel(double weight, double declaredValue) { super(weight, declaredValue); }
+    @Override public double calculateCharge() { return (40.00 + (10.00 * weight)) + 50.00; } // Standard charge + 50
+    @Override public double getDeclaredValue() { return declaredValue; }
+}
+
+public class ParcelShippingDesk {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        int n = scanner.nextInt();
+        double grandTotal = 0.0;
+
+        for (int i = 0; i < n; i++) {
+            String type = scanner.next().toUpperCase();
+            double weight = scanner.nextDouble();
+            double declaredValue = scanner.nextDouble();
+
+            Parcel parcel;
+            switch (type) {
+                case "STANDARD": parcel = new StandardParcel(weight, declaredValue); break;
+                case "EXPRESS": parcel = new ExpressParcel(weight, declaredValue); break;
+                case "FRAGILE": parcel = new FragileParcel(weight, declaredValue); break;
+                default: continue;
+            }
+
+            double charge = parcel.calculateCharge();
+            double insurance = parcel.getInsuranceCharge();
+            double total = parcel.calculateTotal();
+            grandTotal += total;
+
+            System.out.printf("%s: Charge=%.2f Insurance=%.2f Total=%.2f\n", type, charge, insurance, total);
+        }
+        System.out.printf("Grand Total: %.2f\n", grandTotal);
+        scanner.close();
+    }
+}
