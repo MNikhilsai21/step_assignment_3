@@ -1,0 +1,71 @@
+import java.util.Scanner;
+
+// Interface targeting cabs that can physically accommodate night dispatch
+interface OffersNightService {}
+
+abstract class Cab {
+    protected double km;
+
+    public Cab(double km) {
+        this.km = km;
+    }
+
+    protected abstract double getRatePerKm();
+
+    // Universal minimum fare business rule applied across all cabs cleanly in one place
+    public double calculateBaseFare() {
+        double rawFare = km * getRatePerKm();
+        return Math.max(rawFare, 100.00);
+    }
+}
+
+class MiniCab extends Cab {
+    public MiniCab(double km) { super(km); }
+    @Override protected double getRatePerKm() { return 10.00; }
+}
+
+class SedanCab extends Cab implements OffersNightService {
+    public SedanCab(double km) { super(km); }
+    @Override protected double getRatePerKm() { return 14.00; }
+}
+
+class SuvCab extends Cab implements OffersNightService {
+    public SuvCab(double km) { super(km); }
+    @Override protected double getRatePerKm() { return 18.00; }
+}
+
+public class CityCabFareMeter {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        int n = scanner.nextInt();
+        double totalFare = 0.0;
+
+        for (int i = 0; i < n; i++) {
+            String cabType = scanner.next().toUpperCase();
+            double km = scanner.nextDouble();
+            String timeOfDay = scanner.next().toUpperCase();
+
+            Cab cab;
+            switch (cabType) {
+                case "MINI": cab = new MiniCab(km); break;
+                case "SEDAN": cab = new SedanCab(km); break;
+                case "SUV": cab = new SuvCab(km); break;
+                default: continue;
+            }
+
+            if (timeOfDay.equals("NIGHT") && !(cab instanceof OffersNightService)) {
+                System.out.printf("%s: night service not available\n", cabType);
+            } else {
+                double fare = cab.calculateBaseFare();
+                if (timeOfDay.equals("NIGHT")) {
+                    fare *= 1.20; // 20% surcharge applied after the base minimum checks
+                }
+                totalFare += fare;
+                System.out.printf("%s: %.2f\n", cabType, fare);
+            }
+        }
+        System.out.printf("Total: %.2f\n", totalFare);
+        scanner.close();
+    }
+}
